@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Elm counter inside Polymer</title>
+        <title>Elm counter as a webcomponent used by Elm application.</title>
 
-        <!-- <script src="../bower_components/webcomponentsjs/webcomponents&#45;lite.min.js"></script> -->
+        <script src="../bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
 
-        <script src="counter.js"></script>
+        <script src="elm.js"></script>
 
-        <link rel="import" href="my-elm-counter.html"/>
+        <link rel="import" href="elm-counter.html"/>
     </head>
 
     <body>
         <p>In the document, <br>the value is <span class="value">1</span></p>
 
-        <my-elm-counter id="counter" value=1></my-elm-counter>
+        <elm-counter id="counter" value=1></elm-counter>
 
         <script>
             var counter = document.getElementById('counter');

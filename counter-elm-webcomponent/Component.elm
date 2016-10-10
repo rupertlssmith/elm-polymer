@@ -1,4 +1,4 @@
-port module Counter exposing (..)
+port module Component exposing (..)
 
 import Html exposing (..)
 import Html.App exposing (..)

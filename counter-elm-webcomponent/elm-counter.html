@@ -50,8 +50,8 @@
                     app = Elm.Component.embed(this.$.embed, {
                         count: this.count
                     });
-                    //app.ports.set.send(this.count);
-                    app.ports.change.subscribe(count => {
+
+                    app.ports.setCount.subscribe(count => {
                         this.count = count;
                     });
                 }

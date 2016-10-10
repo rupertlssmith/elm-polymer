@@ -7922,15 +7922,12 @@ var _kevinlebrun$elm_polymer_sandbox$API$counter = function (attrs) {
 		_elm_lang$core$Native_List.fromArray(
 			[]));
 };
-
-var _kevinlebrun$elm_polymer_sandbox$Component$init = function (flags) {
-	return {ctor: '_Tuple2', _0: flags.count, _1: _elm_lang$core$Platform_Cmd$none};
-};
-var _kevinlebrun$elm_polymer_sandbox$Component$change = _elm_lang$core$Native_Platform.outgoingPort(
-	'change',
+var _kevinlebrun$elm_polymer_sandbox$API$setCount = _elm_lang$core$Native_Platform.outgoingPort(
+	'setCount',
 	function (v) {
 		return v;
 	});
+
 var _kevinlebrun$elm_polymer_sandbox$Component$update = F2(
 	function (msg, model) {
 		var _p0 = A2(_elm_lang$core$Debug$log, 'val', msg);
@@ -7940,24 +7937,27 @@ var _kevinlebrun$elm_polymer_sandbox$Component$update = F2(
 				return {
 					ctor: '_Tuple2',
 					_0: $new,
-					_1: _kevinlebrun$elm_polymer_sandbox$Component$change($new)
+					_1: _kevinlebrun$elm_polymer_sandbox$API$setCount($new)
 				};
 			case 'Decrement':
 				var $new = model - 1;
 				return {
 					ctor: '_Tuple2',
 					_0: $new,
-					_1: _kevinlebrun$elm_polymer_sandbox$Component$change($new)
+					_1: _kevinlebrun$elm_polymer_sandbox$API$setCount($new)
 				};
 			default:
 				var _p1 = _p0._0;
 				return {
 					ctor: '_Tuple2',
 					_0: _p1,
-					_1: _kevinlebrun$elm_polymer_sandbox$Component$change(_p1)
+					_1: _kevinlebrun$elm_polymer_sandbox$API$setCount(_p1)
 				};
 		}
 	});
+var _kevinlebrun$elm_polymer_sandbox$Component$init = function (flags) {
+	return {ctor: '_Tuple2', _0: flags.count, _1: _elm_lang$core$Platform_Cmd$none};
+};
 var _kevinlebrun$elm_polymer_sandbox$Component$set = _elm_lang$core$Native_Platform.incomingPort('set', _elm_lang$core$Json_Decode$int);
 var _kevinlebrun$elm_polymer_sandbox$Component$Set = function (a) {
 	return {ctor: 'Set', _0: a};

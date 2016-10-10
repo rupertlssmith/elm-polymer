@@ -3,6 +3,7 @@ port module Component exposing (..)
 import Html exposing (..)
 import Html.App exposing (..)
 import Html.Events exposing (..)
+import API
 
 
 type alias Model =
@@ -37,17 +38,17 @@ update msg model =
                 new =
                     model + 1
             in
-                ( new, change new )
+                ( new, API.setCount new )
 
         Decrement ->
             let
                 new =
                     model - 1
             in
-                ( new, change new )
+                ( new, API.setCount new )
 
         Set count ->
-            ( count, change count )
+            ( count, API.setCount count )
 
 
 main : Program { count : Int }
@@ -58,9 +59,6 @@ main =
         , update = update
         , subscriptions = \_ -> set Set
         }
-
-
-port change : Model -> Cmd msg
 
 
 port set : (Model -> msg) -> Sub msg

@@ -1,4 +1,4 @@
-module API exposing (counter, initialCount, onCountChanged)
+port module API exposing (counter, initialCount, onCountChanged, setCount)
 
 import Json.Decode as Decode
 import Html exposing (Attribute, Html)
@@ -6,7 +6,7 @@ import Html.Attributes exposing (attribute)
 import Html.Events exposing (on)
 
 
---setCount: Int -> Cmd msg
+port setCount : Int -> Cmd msg
 
 
 counter : List (Attribute msg) -> Html msg

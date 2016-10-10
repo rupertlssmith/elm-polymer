@@ -8021,11 +8021,41 @@ var _kevinlebrun$elm_polymer_sandbox$Component$main = {
 		})
 };
 
+var _kevinlebrun$elm_polymer_sandbox$Main$update = F2(
+	function (msg, model) {
+		var _p0 = msg;
+		return A2(_elm_lang$core$Debug$log, 'val', _p0._0);
+	});
+var _kevinlebrun$elm_polymer_sandbox$Main$ValueChanged = function (a) {
+	return {ctor: 'ValueChanged', _0: a};
+};
+var _kevinlebrun$elm_polymer_sandbox$Main$view = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		_elm_lang$core$Native_List.fromArray(
+			[]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_kevinlebrun$elm_polymer_sandbox$API$counter(
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_kevinlebrun$elm_polymer_sandbox$API$count(2),
+						_kevinlebrun$elm_polymer_sandbox$API$onCountChanged(_kevinlebrun$elm_polymer_sandbox$Main$ValueChanged)
+					]))
+			]));
+};
+var _kevinlebrun$elm_polymer_sandbox$Main$main = {
+	main: _elm_lang$html$Html_App$beginnerProgram(
+		{model: 0, view: _kevinlebrun$elm_polymer_sandbox$Main$view, update: _kevinlebrun$elm_polymer_sandbox$Main$update})
+};
+
 var Elm = {};
 Elm['API'] = Elm['API'] || {};
 _elm_lang$core$Native_Platform.addPublicModule(Elm['API'], 'API', typeof _kevinlebrun$elm_polymer_sandbox$API$main === 'undefined' ? null : _kevinlebrun$elm_polymer_sandbox$API$main);
 Elm['Component'] = Elm['Component'] || {};
 _elm_lang$core$Native_Platform.addPublicModule(Elm['Component'], 'Component', typeof _kevinlebrun$elm_polymer_sandbox$Component$main === 'undefined' ? null : _kevinlebrun$elm_polymer_sandbox$Component$main);
+Elm['Main'] = Elm['Main'] || {};
+_elm_lang$core$Native_Platform.addPublicModule(Elm['Main'], 'Main', typeof _kevinlebrun$elm_polymer_sandbox$Main$main === 'undefined' ? null : _kevinlebrun$elm_polymer_sandbox$Main$main);
 
 if (typeof define === "function" && define['amd'])
 {

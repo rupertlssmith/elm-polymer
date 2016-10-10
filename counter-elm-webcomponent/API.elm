@@ -1,4 +1,4 @@
-module API exposing (..)
+module API exposing (counter, count, onCountChanged)
 
 import Json.Decode as Decode
 import Html exposing (Attribute, Html)

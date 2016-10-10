@@ -11,15 +11,8 @@
     </head>
 
     <body>
-        <p>In the document, <br>the value is <span class="value">1</span></p>
-
-        <elm-counter id="counter" value=1></elm-counter>
-
-        <script>
-            var counter = document.getElementById('counter');
-            counter.addEventListener('value-changed', function (e) {
-                document.querySelector('.value').textContent = e.detail.value;
-            });
+        <script type="text/javascript">
+            Elm.Main.fullscreen();
         </script>
     </body>
 </html>

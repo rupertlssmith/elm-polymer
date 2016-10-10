@@ -8036,12 +8036,18 @@ var _kevinlebrun$elm_polymer_sandbox$Main$view = function (model) {
 			[]),
 		_elm_lang$core$Native_List.fromArray(
 			[
+				_elm_lang$html$Html$text('component'),
 				_kevinlebrun$elm_polymer_sandbox$API$counter(
 				_elm_lang$core$Native_List.fromArray(
 					[
 						_kevinlebrun$elm_polymer_sandbox$API$count(2),
 						_kevinlebrun$elm_polymer_sandbox$API$onCountChanged(_kevinlebrun$elm_polymer_sandbox$Main$ValueChanged)
-					]))
+					])),
+				_elm_lang$html$Html$text(
+				A2(
+					_elm_lang$core$Basics_ops['++'],
+					'application value is ',
+					_elm_lang$core$Basics$toString(model)))
 			]));
 };
 var _kevinlebrun$elm_polymer_sandbox$Main$main = {

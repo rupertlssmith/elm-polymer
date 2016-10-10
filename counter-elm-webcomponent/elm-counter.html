@@ -16,7 +16,7 @@
                         type: Number,
                         value: 0,
                         notify: true,
-                        reflectToAttribute: true
+                        //reflectToAttribute: true
                     },
                 },
                 reset() {
@@ -26,11 +26,12 @@
                 },
                 ready() {
                     console.log("ready : called")
+                    console.log("ready : value = " + this.value)
                     app = Elm.Component.embed(this.$.embed, { value : this.value });
                     //app.ports.set.send(this.value);
-                    app.ports.change.subscribe(value => {
-                        this.value = value;
-                    });
+                     app.ports.change.subscribe(value => {
+                         this.value = value;
+                     });
                 },
             });
         })();

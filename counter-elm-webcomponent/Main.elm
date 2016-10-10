@@ -12,7 +12,9 @@ type alias Model =
 view : Model -> Html Msg
 view model =
     div []
-        [ counter [ count 2, onCountChanged ValueChanged ]
+        [ text "component"
+        , counter [ count 2, onCountChanged ValueChanged ]
+        , text ("application value is " ++ (toString model))
           --, counter [ count 2, onCountChanged ValueChanged ]
         ]
 

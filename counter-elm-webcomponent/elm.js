@@ -7930,7 +7930,7 @@ var _kevinlebrun$elm_polymer_sandbox$API$setCount = _elm_lang$core$Native_Platfo
 
 var _kevinlebrun$elm_polymer_sandbox$Component$update = F2(
 	function (msg, model) {
-		var _p0 = A2(_elm_lang$core$Debug$log, 'val', msg);
+		var _p0 = A2(_elm_lang$core$Debug$log, 'Component', msg);
 		switch (_p0.ctor) {
 			case 'Increment':
 				var $new = model + 1;
@@ -8023,8 +8023,8 @@ var _kevinlebrun$elm_polymer_sandbox$Component$main = {
 
 var _kevinlebrun$elm_polymer_sandbox$Main$update = F2(
 	function (msg, model) {
-		var _p0 = msg;
-		return A2(_elm_lang$core$Debug$log, 'val', _p0._0);
+		var _p0 = A2(_elm_lang$core$Debug$log, 'Main', msg);
+		return _p0._0;
 	});
 var _kevinlebrun$elm_polymer_sandbox$Main$CountChanged = function (a) {
 	return {ctor: 'CountChanged', _0: a};

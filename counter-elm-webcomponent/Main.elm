@@ -25,9 +25,9 @@ type Msg
 
 update : Msg -> Model -> Model
 update msg model =
-    case msg of
+    case (Debug.log "Main" msg) of
         CountChanged val ->
-            Debug.log "val" val
+            val
 
 
 main : Program Never

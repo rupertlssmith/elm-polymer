@@ -32,7 +32,7 @@ type Msg
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    case (Debug.log "val" msg) of
+    case (Debug.log "Component" msg) of
         Increment ->
             let
                 new =

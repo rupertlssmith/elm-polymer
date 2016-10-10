@@ -20,24 +20,8 @@
                     },
 
                     initialCount: {
-                        type: Number,
-                        //reflectToAttribute: true
+                        type: Number
                     }
-                },
-                reset() {
-                    console.log("reset : called")
-                    this.count = 0;
-                    app.ports.set.send(this.count);
-                },
-                created() {
-                    console.log("created : called")
-                    console.log("created : initial-count = " + this.initialCount)
-                },
-                ready() {
-                    console.log("ready : called")
-                    console.log("ready : count = " + this.count)
-                    console.log("ready : initial-count = " + this.initialCount)
-
                 },
                 attached() {
                     console.log("attached : called")

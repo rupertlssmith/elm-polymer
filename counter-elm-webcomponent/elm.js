@@ -147,7 +147,7 @@ var _elm_lang$core$Native_Array = function() {
 //         "lengths" is an array of accumulated lengths of the child nodes
 
 // M is the maximal table size. 32 seems fast. E is the allowed increase
-// of search steps when concatting to find an index. Lower values will
+// of search steps when concatting to find an index. Lower counts will
 // decrease balancing, but will increase search steps.
 var M = 32;
 var E = 2;
@@ -191,7 +191,7 @@ function unsafeGet(i, array)
 }
 
 
-// Sets the value at the index i. Only the nodes leading to i will get
+// Sets the count at the index i. Only the nodes leading to i will get
 // copied and updated.
 function set(i, item, array)
 {
@@ -802,15 +802,15 @@ function get2(a, b, index)
 		: b[index - a.length];
 }
 
-function set2(a, b, index, value)
+function set2(a, b, index, count)
 {
 	if (index < a.length)
 	{
-		a[index] = value;
+		a[index] = count;
 	}
 	else
 	{
-		b[index - a.length] = value;
+		b[index - a.length] = count;
 	}
 }
 
@@ -1374,7 +1374,7 @@ function eqHelp(x, y, depth, stack)
 }
 
 // Code in Generate/JavaScript.hs, Basics.js, and List.js depends on
-// the particular integer values assigned to LT, EQ, and GT.
+// the particular integer counts assigned to LT, EQ, and GT.
 
 var LT = -1, EQ = 0, GT = 1;
 
@@ -1387,8 +1387,8 @@ function cmp(x, y)
 
 	if (x instanceof String)
 	{
-		var a = x.valueOf();
-		var b = y.valueOf();
+		var a = x.countOf();
+		var b = y.countOf();
 		return a === b ? EQ : a < b ? LT : GT;
 	}
 
@@ -1425,8 +1425,8 @@ function cmp(x, y)
 
 	throw new Error(
 		'Comparison error: comparison is only defined on ints, '
-		+ 'floats, times, chars, strings, lists of comparable values, '
-		+ 'and tuples of comparable values.'
+		+ 'floats, times, chars, strings, lists of comparable counts, '
+		+ 'and tuples of comparable counts.'
 	);
 }
 
@@ -1468,8 +1468,8 @@ function update(oldRecord, updatedFields)
 	var newRecord = {};
 	for (var key in oldRecord)
 	{
-		var value = (key in updatedFields) ? updatedFields[key] : oldRecord[key];
-		newRecord[key] = value;
+		var count = (key in updatedFields) ? updatedFields[key] : oldRecord[key];
+		newRecord[key] = count;
 	}
 	return newRecord;
 }
@@ -1528,13 +1528,13 @@ function crash(moduleName, region)
 	};
 }
 
-function crashCase(moduleName, region, value)
+function crashCase(moduleName, region, count)
 {
 	return function(message) {
 		throw new Error(
 			'Ran into a `Debug.crash` in module `' + moduleName + '`\n\n'
 			+ 'This was caused by the `case` expression ' + regionToString(region) + '.\n'
-			+ 'One of the branches ended with a crash and the following value got through:\n\n    ' + toString(value) + '\n\n'
+			+ 'One of the branches ended with a crash and the following count got through:\n\n    ' + toString(count) + '\n\n'
 			+ 'The message provided by the code author is:\n\n    '
 			+ message
 		);
@@ -2572,30 +2572,30 @@ var _elm_lang$core$List$take = F2(
 		return A3(_elm_lang$core$List$takeFast, 0, n, list);
 	});
 var _elm_lang$core$List$repeatHelp = F3(
-	function (result, n, value) {
+	function (result, n, count) {
 		repeatHelp:
 		while (true) {
 			if (_elm_lang$core$Native_Utils.cmp(n, 0) < 1) {
 				return result;
 			} else {
-				var _v27 = A2(_elm_lang$core$List_ops['::'], value, result),
+				var _v27 = A2(_elm_lang$core$List_ops['::'], count, result),
 					_v28 = n - 1,
-					_v29 = value;
+					_v29 = count;
 				result = _v27;
 				n = _v28;
-				value = _v29;
+				count = _v29;
 				continue repeatHelp;
 			}
 		}
 	});
 var _elm_lang$core$List$repeat = F2(
-	function (n, value) {
+	function (n, count) {
 		return A3(
 			_elm_lang$core$List$repeatHelp,
 			_elm_lang$core$Native_List.fromArray(
 				[]),
 			n,
-			value);
+			count);
 	});
 
 var _elm_lang$core$Array$append = _elm_lang$core$Native_Array.append;
@@ -2718,11 +2718,11 @@ var MAX_STEPS = 10000;
 
 // TASKS
 
-function succeed(value)
+function succeed(count)
 {
 	return {
 		ctor: '_Task_succeed',
-		value: value
+		count: count
 	};
 }
 
@@ -2730,7 +2730,7 @@ function fail(error)
 {
 	return {
 		ctor: '_Task_fail',
-		value: error
+		count: error
 	};
 }
 
@@ -2854,7 +2854,7 @@ function step(numSteps, process)
 			{
 				break;
 			}
-			process.root = process.stack.callback(process.root.value);
+			process.root = process.stack.callback(process.root.count);
 			process.stack = process.stack.rest;
 			++numSteps;
 			continue;
@@ -2870,7 +2870,7 @@ function step(numSteps, process)
 			{
 				break;
 			}
-			process.root = process.stack.callback(process.root.value);
+			process.root = process.stack.callback(process.root.count);
 			process.stack = process.stack.rest;
 			++numSteps;
 			continue;
@@ -3025,7 +3025,7 @@ function mainIsUndefined(name)
 	return function(domNode)
 	{
 		var message = 'Cannot initialize module `' + name +
-			'` because it has no `main` value!\nWhat should I show on screen?';
+			'` because it has no `main` count!\nWhat should I show on screen?';
 		domNode.innerHTML = errorHtml(message);
 		throw new Error(message);
 	};
@@ -3129,7 +3129,7 @@ function initWithFlags(moduleName, realInit, flagDecoder)
 		{
 			throw new Error(
 				'You are trying to initialize module `' + moduleName + '` with an unexpected argument.\n'
-				+ 'When trying to convert it to a usable Elm value, I run into this problem:\n\n'
+				+ 'When trying to convert it to a usable Elm count, I run into this problem:\n\n'
 				+ result._0
 			);
 		}
@@ -3295,12 +3295,12 @@ function spawnLoop(init, onMessage)
 
 function leaf(home)
 {
-	return function(value)
+	return function(count)
 	{
 		return {
 			type: 'leaf',
 			home: home,
-			value: value
+			count: count
 		};
 	};
 }
@@ -3350,7 +3350,7 @@ function gatherEffects(isCmd, bag, effectsDict, taggers)
 	{
 		case 'leaf':
 			var home = bag.home;
-			var effect = toEffect(isCmd, home, taggers, bag.value);
+			var effect = toEffect(isCmd, home, taggers, bag.count);
 			effectsDict[home] = insert(isCmd, effect, effectsDict[home]);
 			return;
 
@@ -3372,7 +3372,7 @@ function gatherEffects(isCmd, bag, effectsDict, taggers)
 	}
 }
 
-function toEffect(isCmd, home, taggers, value)
+function toEffect(isCmd, home, taggers, count)
 {
 	function applyTaggers(x)
 	{
@@ -3389,7 +3389,7 @@ function toEffect(isCmd, home, taggers, value)
 		? effectManagers[home].cmdMap
 		: effectManagers[home].subMap;
 
-	return A2(map, applyTaggers, value)
+	return A2(map, applyTaggers, count)
 }
 
 function insert(isCmd, newEffect, effects)
@@ -3433,8 +3433,8 @@ function outgoingPort(name, converter)
 	return leaf(name);
 }
 
-var outgoingPortMap = F2(function cmdMap(tagger, value) {
-	return value;
+var outgoingPortMap = F2(function cmdMap(tagger, count) {
+	return count;
 });
 
 function setupOutgoingPort(name)
@@ -3450,10 +3450,10 @@ function setupOutgoingPort(name)
 	{
 		while (cmdList.ctor !== '[]')
 		{
-			var value = converter(cmdList._0);
+			var count = converter(cmdList._0);
 			for (var i = 0; i < subs.length; i++)
 			{
-				subs[i](value);
+				subs[i](count);
 			}
 			cmdList = cmdList._1;
 		}
@@ -3502,9 +3502,9 @@ function incomingPort(name, converter)
 
 var incomingPortMap = F2(function subMap(tagger, finalTagger)
 {
-	return function(value)
+	return function(count)
 	{
-		return tagger(finalTagger(value));
+		return tagger(finalTagger(count));
 	};
 });
 
@@ -3551,9 +3551,9 @@ function setupIncomingPort(name, callback)
 
 	// PUBLIC API
 
-	function preInitSend(value)
+	function preInitSend(count)
 	{
-		sentBeforeInit.push(value);
+		sentBeforeInit.push(count);
 	}
 
 	function postInitSend(incomingValue)
@@ -3561,14 +3561,14 @@ function setupIncomingPort(name, callback)
 		var result = A2(_elm_lang$core$Json_Decode$decodeValue, converter, incomingValue);
 		if (result.ctor === 'Err')
 		{
-			throw new Error('Trying to send an unexpected type of value through port `' + name + '`:\n' + result._0);
+			throw new Error('Trying to send an unexpected type of count through port `' + name + '`:\n' + result._0);
 		}
 
-		var value = result._0;
+		var count = result._0;
 		var temp = subs;
 		while (temp.ctor !== '[]')
 		{
-			callback(temp._0(value));
+			callback(temp._0(count));
 			temp = temp._1;
 		}
 	}
@@ -3771,9 +3771,9 @@ var _elm_lang$core$Result$fromMaybe = F2(
 
 var _elm_lang$core$Native_Debug = function() {
 
-function log(tag, value)
+function log(tag, count)
 {
-	var msg = tag + ': ' + _elm_lang$core$Native_Utils.toString(value);
+	var msg = tag + ': ' + _elm_lang$core$Native_Utils.toString(count);
 	var process = process || {};
 	if (process.stdout)
 	{
@@ -3783,7 +3783,7 @@ function log(tag, value)
 	{
 		console.log(msg);
 	}
-	return value;
+	return count;
 }
 
 function crash(message)
@@ -4203,19 +4203,19 @@ var _elm_lang$core$Dict$keys = function (dict) {
 	return A3(
 		_elm_lang$core$Dict$foldr,
 		F3(
-			function (key, value, keyList) {
+			function (key, count, keyList) {
 				return A2(_elm_lang$core$List_ops['::'], key, keyList);
 			}),
 		_elm_lang$core$Native_List.fromArray(
 			[]),
 		dict);
 };
-var _elm_lang$core$Dict$values = function (dict) {
+var _elm_lang$core$Dict$counts = function (dict) {
 	return A3(
 		_elm_lang$core$Dict$foldr,
 		F3(
-			function (key, value, valueList) {
-				return A2(_elm_lang$core$List_ops['::'], value, valueList);
+			function (key, count, countList) {
+				return A2(_elm_lang$core$List_ops['::'], count, countList);
 			}),
 		_elm_lang$core$Native_List.fromArray(
 			[]),
@@ -4225,10 +4225,10 @@ var _elm_lang$core$Dict$toList = function (dict) {
 	return A3(
 		_elm_lang$core$Dict$foldr,
 		F3(
-			function (key, value, list) {
+			function (key, count, list) {
 				return A2(
 					_elm_lang$core$List_ops['::'],
-					{ctor: '_Tuple2', _0: key, _1: value},
+					{ctor: '_Tuple2', _0: key, _1: count},
 					list);
 			}),
 		_elm_lang$core$Native_List.fromArray(
@@ -4983,17 +4983,17 @@ var _elm_lang$core$Dict$update = F3(
 		}
 	});
 var _elm_lang$core$Dict$insert = F3(
-	function (key, value, dict) {
+	function (key, count, dict) {
 		return A3(
 			_elm_lang$core$Dict$update,
 			key,
 			_elm_lang$core$Basics$always(
-				_elm_lang$core$Maybe$Just(value)),
+				_elm_lang$core$Maybe$Just(count)),
 			dict);
 	});
 var _elm_lang$core$Dict$singleton = F2(
-	function (key, value) {
-		return A3(_elm_lang$core$Dict$insert, key, value, _elm_lang$core$Dict$empty);
+	function (key, count) {
+		return A3(_elm_lang$core$Dict$insert, key, count, _elm_lang$core$Dict$empty);
 	});
 var _elm_lang$core$Dict$union = F2(
 	function (t1, t2) {
@@ -5002,8 +5002,8 @@ var _elm_lang$core$Dict$union = F2(
 var _elm_lang$core$Dict$filter = F2(
 	function (predicate, dictionary) {
 		var add = F3(
-			function (key, value, dict) {
-				return A2(predicate, key, value) ? A3(_elm_lang$core$Dict$insert, key, value, dict) : dict;
+			function (key, count, dict) {
+				return A2(predicate, key, count) ? A3(_elm_lang$core$Dict$insert, key, count, dict) : dict;
 			});
 		return A3(_elm_lang$core$Dict$foldl, add, _elm_lang$core$Dict$empty, dictionary);
 	});
@@ -5020,18 +5020,18 @@ var _elm_lang$core$Dict$intersect = F2(
 var _elm_lang$core$Dict$partition = F2(
 	function (predicate, dict) {
 		var add = F3(
-			function (key, value, _p59) {
+			function (key, count, _p59) {
 				var _p60 = _p59;
 				var _p62 = _p60._1;
 				var _p61 = _p60._0;
-				return A2(predicate, key, value) ? {
+				return A2(predicate, key, count) ? {
 					ctor: '_Tuple2',
-					_0: A3(_elm_lang$core$Dict$insert, key, value, _p61),
+					_0: A3(_elm_lang$core$Dict$insert, key, count, _p61),
 					_1: _p62
 				} : {
 					ctor: '_Tuple2',
 					_0: _p61,
-					_1: A3(_elm_lang$core$Dict$insert, key, value, _p62)
+					_1: A3(_elm_lang$core$Dict$insert, key, count, _p62)
 				};
 			});
 		return A3(
@@ -5123,12 +5123,12 @@ function decodeContainer(tag, decoder)
 	};
 }
 
-function decodeNull(value)
+function decodeNull(count)
 {
 	return {
 		ctor: '<decoder>',
 		tag: 'null',
-		value: value
+		count: count
 	};
 }
 
@@ -5146,7 +5146,7 @@ function decodeKeyValuePairs(decoder)
 {
 	return {
 		ctor: '<decoder>',
-		tag: 'key-value',
+		tag: 'key-count',
 		decoder: decoder
 	};
 }
@@ -5289,14 +5289,14 @@ function decodeTuple8(f, d1, d2, d3, d4, d5, d6, d7, d8)
 
 // DECODE HELPERS
 
-function ok(value)
+function ok(count)
 {
-	return { tag: 'ok', value: value };
+	return { tag: 'ok', count: count };
 }
 
-function badPrimitive(type, value)
+function badPrimitive(type, count)
 {
-	return { tag: 'primitive', type: type, value: value };
+	return { tag: 'primitive', type: type, count: count };
 }
 
 function badIndex(index, nestedProblems)
@@ -5334,7 +5334,7 @@ function badToString(problem)
 			case 'primitive':
 				return 'Expecting ' + problem.type
 					+ (context === '_' ? '' : ' at ' + context)
-					+ ' but instead got: ' + jsToString(problem.value);
+					+ ' but instead got: ' + jsToString(problem.count);
 
 			case 'index':
 				context += '[' + problem.index + ']';
@@ -5369,11 +5369,11 @@ function badToString(problem)
 	}
 }
 
-function jsToString(value)
+function jsToString(count)
 {
-	return value === undefined
+	return count === undefined
 		? 'undefined'
-		: JSON.stringify(value);
+		: JSON.stringify(count);
 }
 
 
@@ -5393,128 +5393,128 @@ function runOnString(decoder, string)
 	return run(decoder, json);
 }
 
-function run(decoder, value)
+function run(decoder, count)
 {
-	var result = runHelp(decoder, value);
+	var result = runHelp(decoder, count);
 	return (result.tag === 'ok')
-		? _elm_lang$core$Result$Ok(result.value)
+		? _elm_lang$core$Result$Ok(result.count)
 		: _elm_lang$core$Result$Err(badToString(result));
 }
 
-function runHelp(decoder, value)
+function runHelp(decoder, count)
 {
 	switch (decoder.tag)
 	{
 		case 'bool':
-			return (typeof value === 'boolean')
-				? ok(value)
-				: badPrimitive('a Bool', value);
+			return (typeof count === 'boolean')
+				? ok(count)
+				: badPrimitive('a Bool', count);
 
 		case 'int':
-			if (typeof value !== 'number') {
-				return badPrimitive('an Int', value);
+			if (typeof count !== 'number') {
+				return badPrimitive('an Int', count);
 			}
 
-			if (-2147483647 < value && value < 2147483647 && (value | 0) === value) {
-				return ok(value);
+			if (-2147483647 < count && count < 2147483647 && (count | 0) === count) {
+				return ok(count);
 			}
 
-			if (isFinite(value) && !(value % 1)) {
-				return ok(value);
+			if (isFinite(count) && !(count % 1)) {
+				return ok(count);
 			}
 
-			return badPrimitive('an Int', value);
+			return badPrimitive('an Int', count);
 
 		case 'float':
-			return (typeof value === 'number')
-				? ok(value)
-				: badPrimitive('a Float', value);
+			return (typeof count === 'number')
+				? ok(count)
+				: badPrimitive('a Float', count);
 
 		case 'string':
-			return (typeof value === 'string')
-				? ok(value)
-				: (value instanceof String)
-					? ok(value + '')
-					: badPrimitive('a String', value);
+			return (typeof count === 'string')
+				? ok(count)
+				: (count instanceof String)
+					? ok(count + '')
+					: badPrimitive('a String', count);
 
 		case 'null':
-			return (value === null)
-				? ok(decoder.value)
-				: badPrimitive('null', value);
+			return (count === null)
+				? ok(decoder.count)
+				: badPrimitive('null', count);
 
-		case 'value':
-			return ok(value);
+		case 'count':
+			return ok(count);
 
 		case 'list':
-			if (!(value instanceof Array))
+			if (!(count instanceof Array))
 			{
-				return badPrimitive('a List', value);
+				return badPrimitive('a List', count);
 			}
 
 			var list = _elm_lang$core$Native_List.Nil;
-			for (var i = value.length; i--; )
+			for (var i = count.length; i--; )
 			{
-				var result = runHelp(decoder.decoder, value[i]);
+				var result = runHelp(decoder.decoder, count[i]);
 				if (result.tag !== 'ok')
 				{
 					return badIndex(i, result)
 				}
-				list = _elm_lang$core$Native_List.Cons(result.value, list);
+				list = _elm_lang$core$Native_List.Cons(result.count, list);
 			}
 			return ok(list);
 
 		case 'array':
-			if (!(value instanceof Array))
+			if (!(count instanceof Array))
 			{
-				return badPrimitive('an Array', value);
+				return badPrimitive('an Array', count);
 			}
 
-			var len = value.length;
+			var len = count.length;
 			var array = new Array(len);
 			for (var i = len; i--; )
 			{
-				var result = runHelp(decoder.decoder, value[i]);
+				var result = runHelp(decoder.decoder, count[i]);
 				if (result.tag !== 'ok')
 				{
 					return badIndex(i, result);
 				}
-				array[i] = result.value;
+				array[i] = result.count;
 			}
 			return ok(_elm_lang$core$Native_Array.fromJSArray(array));
 
 		case 'maybe':
-			var result = runHelp(decoder.decoder, value);
+			var result = runHelp(decoder.decoder, count);
 			return (result.tag === 'ok')
-				? ok(_elm_lang$core$Maybe$Just(result.value))
+				? ok(_elm_lang$core$Maybe$Just(result.count))
 				: ok(_elm_lang$core$Maybe$Nothing);
 
 		case 'field':
 			var field = decoder.field;
-			if (typeof value !== 'object' || value === null || !(field in value))
+			if (typeof count !== 'object' || count === null || !(field in count))
 			{
-				return badPrimitive('an object with a field named `' + field + '`', value);
+				return badPrimitive('an object with a field named `' + field + '`', count);
 			}
 
-			var result = runHelp(decoder.decoder, value[field]);
+			var result = runHelp(decoder.decoder, count[field]);
 			return (result.tag === 'ok')
 				? result
 				: badField(field, result);
 
-		case 'key-value':
-			if (typeof value !== 'object' || value === null || value instanceof Array)
+		case 'key-count':
+			if (typeof count !== 'object' || count === null || count instanceof Array)
 			{
-				return badPrimitive('an object', value);
+				return badPrimitive('an object', count);
 			}
 
 			var keyValuePairs = _elm_lang$core$Native_List.Nil;
-			for (var key in value)
+			for (var key in count)
 			{
-				var result = runHelp(decoder.decoder, value[key]);
+				var result = runHelp(decoder.decoder, count[key]);
 				if (result.tag !== 'ok')
 				{
 					return badField(key, result);
 				}
-				var pair = _elm_lang$core$Native_Utils.Tuple2(key, result.value);
+				var pair = _elm_lang$core$Native_Utils.Tuple2(key, result.count);
 				keyValuePairs = _elm_lang$core$Native_List.Cons(pair, keyValuePairs);
 			}
 			return ok(keyValuePairs);
@@ -5524,12 +5524,12 @@ function runHelp(decoder, value)
 			var decoders = decoder.decoders;
 			for (var i = 0; i < decoders.length; i++)
 			{
-				var result = runHelp(decoders[i], value);
+				var result = runHelp(decoders[i], count);
 				if (result.tag !== 'ok')
 				{
 					return result;
 				}
-				answer = answer(result.value);
+				answer = answer(result.count);
 			}
 			return ok(answer);
 
@@ -5537,30 +5537,30 @@ function runHelp(decoder, value)
 			var decoders = decoder.decoders;
 			var len = decoders.length;
 
-			if ( !(value instanceof Array) || value.length !== len )
+			if ( !(count instanceof Array) || count.length !== len )
 			{
-				return badPrimitive('a Tuple with ' + len + ' entries', value);
+				return badPrimitive('a Tuple with ' + len + ' entries', count);
 			}
 
 			var answer = decoder.func;
 			for (var i = 0; i < len; i++)
 			{
-				var result = runHelp(decoders[i], value[i]);
+				var result = runHelp(decoders[i], count[i]);
 				if (result.tag !== 'ok')
 				{
 					return badIndex(i, result);
 				}
-				answer = answer(result.value);
+				answer = answer(result.count);
 			}
 			return ok(answer);
 
 		case 'customAndThen':
-			var result = runHelp(decoder.decoder, value);
+			var result = runHelp(decoder.decoder, count);
 			if (result.tag !== 'ok')
 			{
 				return result;
 			}
-			var realResult = decoder.callback(result.value);
+			var realResult = decoder.callback(result.count);
 			if (realResult.ctor === 'Err')
 			{
 				return badCustom(realResult._0);
@@ -5568,17 +5568,17 @@ function runHelp(decoder, value)
 			return ok(realResult._0);
 
 		case 'andThen':
-			var result = runHelp(decoder.decoder, value);
+			var result = runHelp(decoder.decoder, count);
 			return (result.tag !== 'ok')
 				? result
-				: runHelp(decoder.callback(result.value), value);
+				: runHelp(decoder.callback(result.count), count);
 
 		case 'oneOf':
 			var errors = [];
 			var temp = decoder.decoders;
 			while (temp.ctor !== '[]')
 			{
-				var result = runHelp(temp._0, value);
+				var result = runHelp(temp._0, count);
 
 				if (result.tag === 'ok')
 				{
@@ -5624,16 +5624,16 @@ function equality(a, b)
 		case 'int':
 		case 'float':
 		case 'string':
-		case 'value':
+		case 'count':
 			return true;
 
 		case 'null':
-			return a.value === b.value;
+			return a.count === b.count;
 
 		case 'list':
 		case 'array':
 		case 'maybe':
-		case 'key-value':
+		case 'key-count':
 			return equality(a.decoder, b.decoder);
 
 		case 'field':
@@ -5676,14 +5676,14 @@ function listEquality(aDecoders, bDecoders)
 
 // ENCODE
 
-function encode(indentLevel, value)
+function encode(indentLevel, count)
 {
-	return JSON.stringify(value, null, indentLevel);
+	return JSON.stringify(count, null, indentLevel);
 }
 
-function identity(value)
+function identity(count)
 {
-	return value;
+	return count;
 }
 
 function encodeObject(keyValuePairs)
@@ -5769,7 +5769,7 @@ var _elm_lang$core$Json_Decode$fail = _elm_lang$core$Native_Json.fail;
 var _elm_lang$core$Json_Decode$andThen = _elm_lang$core$Native_Json.andThen;
 var _elm_lang$core$Json_Decode$customDecoder = _elm_lang$core$Native_Json.customAndThen;
 var _elm_lang$core$Json_Decode$decodeValue = _elm_lang$core$Native_Json.run;
-var _elm_lang$core$Json_Decode$value = _elm_lang$core$Native_Json.decodePrimitive('value');
+var _elm_lang$core$Json_Decode$count = _elm_lang$core$Native_Json.decodePrimitive('count');
 var _elm_lang$core$Json_Decode$maybe = function (decoder) {
 	return A2(_elm_lang$core$Native_Json.decodeContainer, 'maybe', decoder);
 };
@@ -5977,13 +5977,13 @@ function organizeFacts(factList)
 		if (key === ATTR_KEY || key === ATTR_NS_KEY || key === EVENT_KEY)
 		{
 			var subFacts = facts[key] || {};
-			subFacts[entry.realKey] = entry.value;
+			subFacts[entry.realKey] = entry.count;
 			facts[key] = subFacts;
 		}
 		else if (key === STYLE_KEY)
 		{
 			var styles = facts[key] || {};
-			var styleList = entry.value;
+			var styleList = entry.count;
 			while (styleList.ctor !== '[]')
 			{
 				var style = styleList._0;
@@ -5994,11 +5994,11 @@ function organizeFacts(factList)
 		}
 		else if (key === 'namespace')
 		{
-			namespace = entry.value;
+			namespace = entry.count;
 		}
 		else
 		{
-			facts[key] = entry.value;
+			facts[key] = entry.count;
 		}
 		factList = factList._1;
 	}
@@ -6014,41 +6014,41 @@ function organizeFacts(factList)
 ////////////  PROPERTIES AND ATTRIBUTES  ////////////
 
 
-function style(value)
+function style(count)
 {
 	return {
 		key: STYLE_KEY,
-		value: value
+		count: count
 	};
 }
 
 
-function property(key, value)
+function property(key, count)
 {
 	return {
 		key: key,
-		value: value
+		count: count
 	};
 }
 
 
-function attribute(key, value)
+function attribute(key, count)
 {
 	return {
 		key: ATTR_KEY,
 		realKey: key,
-		value: value
+		count: count
 	};
 }
 
 
-function attributeNS(namespace, key, value)
+function attributeNS(namespace, key, count)
 {
 	return {
 		key: ATTR_NS_KEY,
 		realKey: key,
-		value: {
-			value: value,
+		count: {
+			count: count,
 			namespace: namespace
 		}
 	};
@@ -6060,7 +6060,7 @@ function on(name, options, decoder)
 	return {
 		key: EVENT_KEY,
 		realKey: name,
-		value: {
+		count: {
 			options: options,
 			decoder: decoder
 		}
@@ -6230,35 +6230,35 @@ function applyFacts(domNode, eventNode, facts)
 {
 	for (var key in facts)
 	{
-		var value = facts[key];
+		var count = facts[key];
 
 		switch (key)
 		{
 			case STYLE_KEY:
-				applyStyles(domNode, value);
+				applyStyles(domNode, count);
 				break;
 
 			case EVENT_KEY:
-				applyEvents(domNode, eventNode, value);
+				applyEvents(domNode, eventNode, count);
 				break;
 
 			case ATTR_KEY:
-				applyAttrs(domNode, value);
+				applyAttrs(domNode, count);
 				break;
 
 			case ATTR_NS_KEY:
-				applyAttrsNS(domNode, value);
+				applyAttrsNS(domNode, count);
 				break;
 
-			case 'value':
-				if (domNode[key] !== value)
+			case 'count':
+				if (domNode[key] !== count)
 				{
-					domNode[key] = value;
+					domNode[key] = count;
 				}
 				break;
 
 			default:
-				domNode[key] = value;
+				domNode[key] = count;
 				break;
 		}
 	}
@@ -6281,22 +6281,22 @@ function applyEvents(domNode, eventNode, events)
 	for (var key in events)
 	{
 		var handler = allHandlers[key];
-		var value = events[key];
+		var count = events[key];
 
-		if (typeof value === 'undefined')
+		if (typeof count === 'undefined')
 		{
 			domNode.removeEventListener(key, handler);
 			allHandlers[key] = undefined;
 		}
 		else if (typeof handler === 'undefined')
 		{
-			var handler = makeEventHandler(eventNode, value);
+			var handler = makeEventHandler(eventNode, count);
 			domNode.addEventListener(key, handler);
 			allHandlers[key] = handler;
 		}
 		else
 		{
-			handler.info = value;
+			handler.info = count;
 		}
 	}
 
@@ -6309,9 +6309,9 @@ function makeEventHandler(eventNode, info)
 	{
 		var info = eventHandler.info;
 
-		var value = A2(_elm_lang$core$Native_Json.run, info.decoder, event);
+		var count = A2(_elm_lang$core$Native_Json.run, info.decoder, event);
 
-		if (value.ctor === 'Ok')
+		if (count.ctor === 'Ok')
 		{
 			var options = info.options;
 			if (options.stopPropagation)
@@ -6323,7 +6323,7 @@ function makeEventHandler(eventNode, info)
 				event.preventDefault();
 			}
 
-			var message = value._0;
+			var message = count._0;
 
 			var currentEventNode = eventNode;
 			while (currentEventNode)
@@ -6354,14 +6354,14 @@ function applyAttrs(domNode, attrs)
 {
 	for (var key in attrs)
 	{
-		var value = attrs[key];
-		if (typeof value === 'undefined')
+		var count = attrs[key];
+		if (typeof count === 'undefined')
 		{
 			domNode.removeAttribute(key);
 		}
 		else
 		{
-			domNode.setAttribute(key, value);
+			domNode.setAttribute(key, count);
 		}
 	}
 }
@@ -6372,15 +6372,15 @@ function applyAttrsNS(domNode, nsAttrs)
 	{
 		var pair = nsAttrs[key];
 		var namespace = pair.namespace;
-		var value = pair.value;
+		var count = pair.count;
 
-		if (typeof value === 'undefined')
+		if (typeof count === 'undefined')
 		{
 			domNode.removeAttributeNS(namespace, key);
 		}
 		else
 		{
-			domNode.setAttributeNS(namespace, key, value);
+			domNode.setAttributeNS(namespace, key, count);
 		}
 	}
 }
@@ -6624,7 +6624,7 @@ function diffFacts(a, b, category)
 				(category === EVENT_KEY || category === ATTR_KEY)
 					? undefined
 					:
-				{ namespace: a[aKey].namespace, value: undefined };
+				{ namespace: a[aKey].namespace, count: undefined };
 
 			continue;
 		}
@@ -6633,7 +6633,7 @@ function diffFacts(a, b, category)
 		var bValue = b[aKey];
 
 		// reference equal, so don't worry about it
-		if (aValue === bValue && aKey !== 'value'
+		if (aValue === bValue && aKey !== 'count'
 			|| category === EVENT_KEY && equalEvents(aValue, bValue))
 		{
 			continue;
@@ -7445,14 +7445,14 @@ var _elm_lang$html$Html_App$beginnerProgram = function (_p1) {
 var _elm_lang$html$Html_App$map = _elm_lang$virtual_dom$VirtualDom$map;
 
 var _elm_lang$html$Html_Attributes$attribute = _elm_lang$virtual_dom$VirtualDom$attribute;
-var _elm_lang$html$Html_Attributes$contextmenu = function (value) {
-	return A2(_elm_lang$html$Html_Attributes$attribute, 'contextmenu', value);
+var _elm_lang$html$Html_Attributes$contextmenu = function (count) {
+	return A2(_elm_lang$html$Html_Attributes$attribute, 'contextmenu', count);
 };
-var _elm_lang$html$Html_Attributes$draggable = function (value) {
-	return A2(_elm_lang$html$Html_Attributes$attribute, 'draggable', value);
+var _elm_lang$html$Html_Attributes$draggable = function (count) {
+	return A2(_elm_lang$html$Html_Attributes$attribute, 'draggable', count);
 };
-var _elm_lang$html$Html_Attributes$list = function (value) {
-	return A2(_elm_lang$html$Html_Attributes$attribute, 'list', value);
+var _elm_lang$html$Html_Attributes$list = function (count) {
+	return A2(_elm_lang$html$Html_Attributes$attribute, 'list', count);
 };
 var _elm_lang$html$Html_Attributes$maxlength = function (n) {
 	return A2(
@@ -7460,11 +7460,11 @@ var _elm_lang$html$Html_Attributes$maxlength = function (n) {
 		'maxlength',
 		_elm_lang$core$Basics$toString(n));
 };
-var _elm_lang$html$Html_Attributes$datetime = function (value) {
-	return A2(_elm_lang$html$Html_Attributes$attribute, 'datetime', value);
+var _elm_lang$html$Html_Attributes$datetime = function (count) {
+	return A2(_elm_lang$html$Html_Attributes$attribute, 'datetime', count);
 };
-var _elm_lang$html$Html_Attributes$pubdate = function (value) {
-	return A2(_elm_lang$html$Html_Attributes$attribute, 'pubdate', value);
+var _elm_lang$html$Html_Attributes$pubdate = function (count) {
+	return A2(_elm_lang$html$Html_Attributes$attribute, 'pubdate', count);
 };
 var _elm_lang$html$Html_Attributes$colspan = function (n) {
 	return A2(
@@ -7501,17 +7501,17 @@ var _elm_lang$html$Html_Attributes$accesskey = function ($char) {
 		'accessKey',
 		_elm_lang$core$String$fromChar($char));
 };
-var _elm_lang$html$Html_Attributes$dir = function (value) {
-	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'dir', value);
+var _elm_lang$html$Html_Attributes$dir = function (count) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'dir', count);
 };
-var _elm_lang$html$Html_Attributes$dropzone = function (value) {
-	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'dropzone', value);
+var _elm_lang$html$Html_Attributes$dropzone = function (count) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'dropzone', count);
 };
-var _elm_lang$html$Html_Attributes$itemprop = function (value) {
-	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'itemprop', value);
+var _elm_lang$html$Html_Attributes$itemprop = function (count) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'itemprop', count);
 };
-var _elm_lang$html$Html_Attributes$lang = function (value) {
-	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'lang', value);
+var _elm_lang$html$Html_Attributes$lang = function (count) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'lang', count);
 };
 var _elm_lang$html$Html_Attributes$tabindex = function (n) {
 	return A2(
@@ -7519,74 +7519,74 @@ var _elm_lang$html$Html_Attributes$tabindex = function (n) {
 		'tabIndex',
 		_elm_lang$core$Basics$toString(n));
 };
-var _elm_lang$html$Html_Attributes$charset = function (value) {
-	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'charset', value);
+var _elm_lang$html$Html_Attributes$charset = function (count) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'charset', count);
 };
-var _elm_lang$html$Html_Attributes$content = function (value) {
-	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'content', value);
+var _elm_lang$html$Html_Attributes$content = function (count) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'content', count);
 };
-var _elm_lang$html$Html_Attributes$httpEquiv = function (value) {
-	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'httpEquiv', value);
+var _elm_lang$html$Html_Attributes$httpEquiv = function (count) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'httpEquiv', count);
 };
-var _elm_lang$html$Html_Attributes$language = function (value) {
-	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'language', value);
+var _elm_lang$html$Html_Attributes$language = function (count) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'language', count);
 };
-var _elm_lang$html$Html_Attributes$src = function (value) {
-	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'src', value);
+var _elm_lang$html$Html_Attributes$src = function (count) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'src', count);
 };
-var _elm_lang$html$Html_Attributes$height = function (value) {
+var _elm_lang$html$Html_Attributes$height = function (count) {
 	return A2(
 		_elm_lang$html$Html_Attributes$stringProperty,
 		'height',
-		_elm_lang$core$Basics$toString(value));
+		_elm_lang$core$Basics$toString(count));
 };
-var _elm_lang$html$Html_Attributes$width = function (value) {
+var _elm_lang$html$Html_Attributes$width = function (count) {
 	return A2(
 		_elm_lang$html$Html_Attributes$stringProperty,
 		'width',
-		_elm_lang$core$Basics$toString(value));
+		_elm_lang$core$Basics$toString(count));
 };
-var _elm_lang$html$Html_Attributes$alt = function (value) {
-	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'alt', value);
+var _elm_lang$html$Html_Attributes$alt = function (count) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'alt', count);
 };
-var _elm_lang$html$Html_Attributes$preload = function (value) {
-	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'preload', value);
+var _elm_lang$html$Html_Attributes$preload = function (count) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'preload', count);
 };
-var _elm_lang$html$Html_Attributes$poster = function (value) {
-	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'poster', value);
+var _elm_lang$html$Html_Attributes$poster = function (count) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'poster', count);
 };
-var _elm_lang$html$Html_Attributes$kind = function (value) {
-	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'kind', value);
+var _elm_lang$html$Html_Attributes$kind = function (count) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'kind', count);
 };
-var _elm_lang$html$Html_Attributes$srclang = function (value) {
-	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'srclang', value);
+var _elm_lang$html$Html_Attributes$srclang = function (count) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'srclang', count);
 };
-var _elm_lang$html$Html_Attributes$sandbox = function (value) {
-	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'sandbox', value);
+var _elm_lang$html$Html_Attributes$sandbox = function (count) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'sandbox', count);
 };
-var _elm_lang$html$Html_Attributes$srcdoc = function (value) {
-	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'srcdoc', value);
+var _elm_lang$html$Html_Attributes$srcdoc = function (count) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'srcdoc', count);
 };
-var _elm_lang$html$Html_Attributes$type$ = function (value) {
-	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'type', value);
+var _elm_lang$html$Html_Attributes$type$ = function (count) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'type', count);
 };
-var _elm_lang$html$Html_Attributes$value = function (value) {
-	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'value', value);
+var _elm_lang$html$Html_Attributes$count = function (count) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'count', count);
 };
-var _elm_lang$html$Html_Attributes$defaultValue = function (value) {
-	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'defaultValue', value);
+var _elm_lang$html$Html_Attributes$defaultValue = function (count) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'defaultValue', count);
 };
-var _elm_lang$html$Html_Attributes$placeholder = function (value) {
-	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'placeholder', value);
+var _elm_lang$html$Html_Attributes$placeholder = function (count) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'placeholder', count);
 };
-var _elm_lang$html$Html_Attributes$accept = function (value) {
-	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'accept', value);
+var _elm_lang$html$Html_Attributes$accept = function (count) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'accept', count);
 };
-var _elm_lang$html$Html_Attributes$acceptCharset = function (value) {
-	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'acceptCharset', value);
+var _elm_lang$html$Html_Attributes$acceptCharset = function (count) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'acceptCharset', count);
 };
-var _elm_lang$html$Html_Attributes$action = function (value) {
-	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'action', value);
+var _elm_lang$html$Html_Attributes$action = function (count) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'action', count);
 };
 var _elm_lang$html$Html_Attributes$autocomplete = function (bool) {
 	return A2(
@@ -7594,14 +7594,14 @@ var _elm_lang$html$Html_Attributes$autocomplete = function (bool) {
 		'autocomplete',
 		bool ? 'on' : 'off');
 };
-var _elm_lang$html$Html_Attributes$autosave = function (value) {
-	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'autosave', value);
+var _elm_lang$html$Html_Attributes$autosave = function (count) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'autosave', count);
 };
-var _elm_lang$html$Html_Attributes$enctype = function (value) {
-	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'enctype', value);
+var _elm_lang$html$Html_Attributes$enctype = function (count) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'enctype', count);
 };
-var _elm_lang$html$Html_Attributes$formaction = function (value) {
-	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'formAction', value);
+var _elm_lang$html$Html_Attributes$formaction = function (count) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'formAction', count);
 };
 var _elm_lang$html$Html_Attributes$minlength = function (n) {
 	return A2(
@@ -7609,14 +7609,14 @@ var _elm_lang$html$Html_Attributes$minlength = function (n) {
 		'minLength',
 		_elm_lang$core$Basics$toString(n));
 };
-var _elm_lang$html$Html_Attributes$method = function (value) {
-	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'method', value);
+var _elm_lang$html$Html_Attributes$method = function (count) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'method', count);
 };
-var _elm_lang$html$Html_Attributes$name = function (value) {
-	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'name', value);
+var _elm_lang$html$Html_Attributes$name = function (count) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'name', count);
 };
-var _elm_lang$html$Html_Attributes$pattern = function (value) {
-	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'pattern', value);
+var _elm_lang$html$Html_Attributes$pattern = function (count) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'pattern', count);
 };
 var _elm_lang$html$Html_Attributes$size = function (n) {
 	return A2(
@@ -7624,17 +7624,17 @@ var _elm_lang$html$Html_Attributes$size = function (n) {
 		'size',
 		_elm_lang$core$Basics$toString(n));
 };
-var _elm_lang$html$Html_Attributes$for = function (value) {
-	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'htmlFor', value);
+var _elm_lang$html$Html_Attributes$for = function (count) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'htmlFor', count);
 };
-var _elm_lang$html$Html_Attributes$form = function (value) {
-	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'form', value);
+var _elm_lang$html$Html_Attributes$form = function (count) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'form', count);
 };
-var _elm_lang$html$Html_Attributes$max = function (value) {
-	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'max', value);
+var _elm_lang$html$Html_Attributes$max = function (count) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'max', count);
 };
-var _elm_lang$html$Html_Attributes$min = function (value) {
-	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'min', value);
+var _elm_lang$html$Html_Attributes$min = function (count) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'min', count);
 };
 var _elm_lang$html$Html_Attributes$step = function (n) {
 	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'step', n);
@@ -7651,50 +7651,50 @@ var _elm_lang$html$Html_Attributes$rows = function (n) {
 		'rows',
 		_elm_lang$core$Basics$toString(n));
 };
-var _elm_lang$html$Html_Attributes$wrap = function (value) {
-	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'wrap', value);
+var _elm_lang$html$Html_Attributes$wrap = function (count) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'wrap', count);
 };
-var _elm_lang$html$Html_Attributes$usemap = function (value) {
-	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'useMap', value);
+var _elm_lang$html$Html_Attributes$usemap = function (count) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'useMap', count);
 };
-var _elm_lang$html$Html_Attributes$shape = function (value) {
-	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'shape', value);
+var _elm_lang$html$Html_Attributes$shape = function (count) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'shape', count);
 };
-var _elm_lang$html$Html_Attributes$coords = function (value) {
-	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'coords', value);
+var _elm_lang$html$Html_Attributes$coords = function (count) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'coords', count);
 };
-var _elm_lang$html$Html_Attributes$challenge = function (value) {
-	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'challenge', value);
+var _elm_lang$html$Html_Attributes$challenge = function (count) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'challenge', count);
 };
-var _elm_lang$html$Html_Attributes$keytype = function (value) {
-	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'keytype', value);
+var _elm_lang$html$Html_Attributes$keytype = function (count) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'keytype', count);
 };
-var _elm_lang$html$Html_Attributes$align = function (value) {
-	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'align', value);
+var _elm_lang$html$Html_Attributes$align = function (count) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'align', count);
 };
-var _elm_lang$html$Html_Attributes$cite = function (value) {
-	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'cite', value);
+var _elm_lang$html$Html_Attributes$cite = function (count) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'cite', count);
 };
-var _elm_lang$html$Html_Attributes$href = function (value) {
-	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'href', value);
+var _elm_lang$html$Html_Attributes$href = function (count) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'href', count);
 };
-var _elm_lang$html$Html_Attributes$target = function (value) {
-	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'target', value);
+var _elm_lang$html$Html_Attributes$target = function (count) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'target', count);
 };
-var _elm_lang$html$Html_Attributes$downloadAs = function (value) {
-	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'download', value);
+var _elm_lang$html$Html_Attributes$downloadAs = function (count) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'download', count);
 };
-var _elm_lang$html$Html_Attributes$hreflang = function (value) {
-	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'hreflang', value);
+var _elm_lang$html$Html_Attributes$hreflang = function (count) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'hreflang', count);
 };
-var _elm_lang$html$Html_Attributes$media = function (value) {
-	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'media', value);
+var _elm_lang$html$Html_Attributes$media = function (count) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'media', count);
 };
-var _elm_lang$html$Html_Attributes$ping = function (value) {
-	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'ping', value);
+var _elm_lang$html$Html_Attributes$ping = function (count) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'ping', count);
 };
-var _elm_lang$html$Html_Attributes$rel = function (value) {
-	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'rel', value);
+var _elm_lang$html$Html_Attributes$rel = function (count) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'rel', count);
 };
 var _elm_lang$html$Html_Attributes$start = function (n) {
 	return A2(
@@ -7702,14 +7702,14 @@ var _elm_lang$html$Html_Attributes$start = function (n) {
 		'start',
 		_elm_lang$core$Basics$toString(n));
 };
-var _elm_lang$html$Html_Attributes$headers = function (value) {
-	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'headers', value);
+var _elm_lang$html$Html_Attributes$headers = function (count) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'headers', count);
 };
-var _elm_lang$html$Html_Attributes$scope = function (value) {
-	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'scope', value);
+var _elm_lang$html$Html_Attributes$scope = function (count) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'scope', count);
 };
-var _elm_lang$html$Html_Attributes$manifest = function (value) {
-	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'manifest', value);
+var _elm_lang$html$Html_Attributes$manifest = function (count) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'manifest', count);
 };
 var _elm_lang$html$Html_Attributes$boolProperty = F2(
 	function (name, bool) {
@@ -7775,8 +7775,8 @@ var _elm_lang$html$Html_Attributes$readonly = function (bool) {
 var _elm_lang$html$Html_Attributes$required = function (bool) {
 	return A2(_elm_lang$html$Html_Attributes$boolProperty, 'required', bool);
 };
-var _elm_lang$html$Html_Attributes$ismap = function (value) {
-	return A2(_elm_lang$html$Html_Attributes$boolProperty, 'isMap', value);
+var _elm_lang$html$Html_Attributes$ismap = function (count) {
+	return A2(_elm_lang$html$Html_Attributes$boolProperty, 'isMap', count);
 };
 var _elm_lang$html$Html_Attributes$download = function (bool) {
 	return A2(_elm_lang$html$Html_Attributes$boolProperty, 'download', bool);
@@ -7805,7 +7805,7 @@ var _elm_lang$html$Html_Events$targetChecked = A2(
 var _elm_lang$html$Html_Events$targetValue = A2(
 	_elm_lang$core$Json_Decode$at,
 	_elm_lang$core$Native_List.fromArray(
-		['target', 'value']),
+		['target', 'count']),
 	_elm_lang$core$Json_Decode$string);
 var _elm_lang$html$Html_Events$defaultOptions = _elm_lang$virtual_dom$VirtualDom$defaultOptions;
 var _elm_lang$html$Html_Events$onWithOptions = _elm_lang$virtual_dom$VirtualDom$onWithOptions;
@@ -7897,7 +7897,7 @@ var _elm_lang$html$Html_Events$Options = F2(
 		return {stopPropagation: a, preventDefault: b};
 	});
 
-var _kevinlebrun$elm_polymer_sandbox$API$detailValue = A2(
+var _kevinlebrun$elm_polymer_sandbox$API$detailCount = A2(
 	_elm_lang$core$Json_Decode$at,
 	_elm_lang$core$Native_List.fromArray(
 		['detail', 'value']),
@@ -7905,13 +7905,13 @@ var _kevinlebrun$elm_polymer_sandbox$API$detailValue = A2(
 var _kevinlebrun$elm_polymer_sandbox$API$onCountChanged = function (tagger) {
 	return A2(
 		_elm_lang$html$Html_Events$on,
-		'value-changed',
-		A2(_elm_lang$core$Json_Decode$map, tagger, _kevinlebrun$elm_polymer_sandbox$API$detailValue));
+		'count-changed',
+		A2(_elm_lang$core$Json_Decode$map, tagger, _kevinlebrun$elm_polymer_sandbox$API$detailCount));
 };
-var _kevinlebrun$elm_polymer_sandbox$API$initialValue = function (val) {
+var _kevinlebrun$elm_polymer_sandbox$API$initialCount = function (val) {
 	return A2(
 		_elm_lang$html$Html_Attributes$attribute,
-		'initial-value',
+		'initial-count',
 		_elm_lang$core$Basics$toString(val));
 };
 var _kevinlebrun$elm_polymer_sandbox$API$counter = function (attrs) {
@@ -7924,7 +7924,7 @@ var _kevinlebrun$elm_polymer_sandbox$API$counter = function (attrs) {
 };
 
 var _kevinlebrun$elm_polymer_sandbox$Component$init = function (flags) {
-	return {ctor: '_Tuple2', _0: flags.value, _1: _elm_lang$core$Platform_Cmd$none};
+	return {ctor: '_Tuple2', _0: flags.count, _1: _elm_lang$core$Platform_Cmd$none};
 };
 var _kevinlebrun$elm_polymer_sandbox$Component$change = _elm_lang$core$Native_Platform.outgoingPort(
 	'change',
@@ -8014,10 +8014,10 @@ var _kevinlebrun$elm_polymer_sandbox$Component$main = {
 		}),
 	flags: A2(
 		_elm_lang$core$Json_Decode$andThen,
-		A2(_elm_lang$core$Json_Decode_ops[':='], 'value', _elm_lang$core$Json_Decode$int),
-		function (value) {
+		A2(_elm_lang$core$Json_Decode_ops[':='], 'count', _elm_lang$core$Json_Decode$int),
+		function (count) {
 			return _elm_lang$core$Json_Decode$succeed(
-				{value: value});
+				{count: count});
 		})
 };
 
@@ -8026,8 +8026,8 @@ var _kevinlebrun$elm_polymer_sandbox$Main$update = F2(
 		var _p0 = msg;
 		return A2(_elm_lang$core$Debug$log, 'val', _p0._0);
 	});
-var _kevinlebrun$elm_polymer_sandbox$Main$ValueChanged = function (a) {
-	return {ctor: 'ValueChanged', _0: a};
+var _kevinlebrun$elm_polymer_sandbox$Main$CountChanged = function (a) {
+	return {ctor: 'CountChanged', _0: a};
 };
 var _kevinlebrun$elm_polymer_sandbox$Main$view = function (model) {
 	return A2(
@@ -8040,13 +8040,13 @@ var _kevinlebrun$elm_polymer_sandbox$Main$view = function (model) {
 				_kevinlebrun$elm_polymer_sandbox$API$counter(
 				_elm_lang$core$Native_List.fromArray(
 					[
-						_kevinlebrun$elm_polymer_sandbox$API$initialValue(2),
-						_kevinlebrun$elm_polymer_sandbox$API$onCountChanged(_kevinlebrun$elm_polymer_sandbox$Main$ValueChanged)
+						_kevinlebrun$elm_polymer_sandbox$API$initialCount(2),
+						_kevinlebrun$elm_polymer_sandbox$API$onCountChanged(_kevinlebrun$elm_polymer_sandbox$Main$CountChanged)
 					])),
 				_elm_lang$html$Html$text(
 				A2(
 					_elm_lang$core$Basics_ops['++'],
-					'application value is ',
+					'application count is ',
 					_elm_lang$core$Basics$toString(model)))
 			]));
 };

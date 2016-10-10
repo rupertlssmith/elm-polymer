@@ -9,9 +9,9 @@ type alias Model =
     Int
 
 
-init : { a | value : Int } -> ( Model, Cmd Msg )
+init : { a | count : Int } -> ( Model, Cmd Msg )
 init flags =
-    ( flags.value, Cmd.none )
+    ( flags.count, Cmd.none )
 
 
 view : Model -> Html Msg
@@ -46,11 +46,11 @@ update msg model =
             in
                 ( new, change new )
 
-        Set value ->
-            ( value, change value )
+        Set count ->
+            ( count, change count )
 
 
-main : Program { value : Int }
+main : Program { count : Int }
 main =
     programWithFlags
         { init = init

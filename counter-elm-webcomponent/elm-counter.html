@@ -1,6 +1,6 @@
 <link rel="import" href="../bower_components/polymer/polymer.html" />
 
-<dom-module id="elm-counter" initial-value$="{{initialValue}}">
+<dom-module id="elm-counter" initial-count$="{{initialCount}}">
     <template>
         <div id="embed" ></div>
     </template>
@@ -12,47 +12,47 @@
             Polymer({
                 is: "elm-counter",
                 properties: {
-                    value: {
+                    count: {
                         type: Number,
-                        value: 0,
+                        count: 0,
                         notify: true,
                         reflectToAttribute: true
                     },
 
-                    initialValue: {
+                    initialCount: {
                         type: Number,
                         //reflectToAttribute: true
                     }
                 },
                 reset() {
                     console.log("reset : called")
-                    this.value = 0;
-                    app.ports.set.send(this.value);
+                    this.count = 0;
+                    app.ports.set.send(this.count);
                 },
                 created() {
                     console.log("created : called")
-                    console.log("created : initial-value = " + this.initialValue)
+                    console.log("created : initial-count = " + this.initialCount)
                 },
                 ready() {
                     console.log("ready : called")
-                    console.log("ready : value = " + this.value)
-                    console.log("ready : initial-value = " + this.initialValue)
+                    console.log("ready : count = " + this.count)
+                    console.log("ready : initial-count = " + this.initialCount)
 
                 },
                 attached() {
                     console.log("attached : called")
-                    console.log("attached : initial-value = " + this.initialValue)
+                    console.log("attached : initial-count = " + this.initialCount)
 
-                    if (this.initialValue) {
-                      this.value = this.initialValue;
+                    if (this.initialCount) {
+                      this.count = this.initialCount;
                     }
 
                     app = Elm.Component.embed(this.$.embed, {
-                        value: this.value
+                        count: this.count
                     });
-                    //app.ports.set.send(this.value);
-                    app.ports.change.subscribe(value => {
-                        this.value = value;
+                    //app.ports.set.send(this.count);
+                    app.ports.change.subscribe(count => {
+                        this.count = count;
                     });
                 }
             });

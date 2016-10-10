@@ -13,20 +13,20 @@ view : Model -> Html Msg
 view model =
     div []
         [ text "component"
-        , counter [ initialValue 2, onCountChanged ValueChanged ]
-        , text ("application value is " ++ (toString model))
-          --, counter [ count 2, onCountChanged ValueChanged ]
+        , counter [ initialCount 2, onCountChanged CountChanged ]
+        , text ("application count is " ++ (toString model))
+          --, counter [ count 2, onCountChanged CountChanged ]
         ]
 
 
 type Msg
-    = ValueChanged Int
+    = CountChanged Int
 
 
 update : Msg -> Model -> Model
 update msg model =
     case msg of
-        ValueChanged val ->
+        CountChanged val ->
             Debug.log "val" val
 
 

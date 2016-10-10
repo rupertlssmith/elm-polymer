@@ -3,8 +3,6 @@
 <dom-module id="elm-counter">
     <template>
         <div id="embed"></div>
-
-        <p>Controls: <button on-click="reset">Reset</button></p>
     </template>
 
     <script>
@@ -21,10 +19,12 @@
                     },
                 },
                 reset() {
+                    console.log("reset : called")
                     this.value = 0;
                     app.ports.set.send(this.value);
                 },
                 ready() {
+                    console.log("ready : called")
                     app = Elm.Component.embed(this.$.embed, { value : this.value });
                     app.ports.change.subscribe(value => {
                         this.value = value;

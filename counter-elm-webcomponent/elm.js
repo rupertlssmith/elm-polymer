@@ -8041,6 +8041,12 @@ var _kevinlebrun$elm_polymer_sandbox$Main$view = function (model) {
 					[
 						_kevinlebrun$elm_polymer_sandbox$API$count(2),
 						_kevinlebrun$elm_polymer_sandbox$API$onCountChanged(_kevinlebrun$elm_polymer_sandbox$Main$ValueChanged)
+					])),
+				_kevinlebrun$elm_polymer_sandbox$API$counter(
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_kevinlebrun$elm_polymer_sandbox$API$count(2),
+						_kevinlebrun$elm_polymer_sandbox$API$onCountChanged(_kevinlebrun$elm_polymer_sandbox$Main$ValueChanged)
 					]))
 			]));
 };

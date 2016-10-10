@@ -7908,10 +7908,10 @@ var _kevinlebrun$elm_polymer_sandbox$API$onCountChanged = function (tagger) {
 		'value-changed',
 		A2(_elm_lang$core$Json_Decode$map, tagger, _kevinlebrun$elm_polymer_sandbox$API$detailValue));
 };
-var _kevinlebrun$elm_polymer_sandbox$API$count = function (val) {
+var _kevinlebrun$elm_polymer_sandbox$API$initialValue = function (val) {
 	return A2(
 		_elm_lang$html$Html_Attributes$attribute,
-		'value',
+		'initial-value',
 		_elm_lang$core$Basics$toString(val));
 };
 var _kevinlebrun$elm_polymer_sandbox$API$counter = function (attrs) {
@@ -8040,7 +8040,7 @@ var _kevinlebrun$elm_polymer_sandbox$Main$view = function (model) {
 				_kevinlebrun$elm_polymer_sandbox$API$counter(
 				_elm_lang$core$Native_List.fromArray(
 					[
-						_kevinlebrun$elm_polymer_sandbox$API$count(2),
+						_kevinlebrun$elm_polymer_sandbox$API$initialValue(2),
 						_kevinlebrun$elm_polymer_sandbox$API$onCountChanged(_kevinlebrun$elm_polymer_sandbox$Main$ValueChanged)
 					])),
 				_elm_lang$html$Html$text(

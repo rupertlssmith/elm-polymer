@@ -1,12 +1,12 @@
-<link rel="import" href="../bower_components/polymer/polymer.html"/>
+<link rel="import" href="../bower_components/polymer/polymer.html" />
 
-<dom-module id="elm-counter">
+<dom-module id="elm-counter" initial-value$="{{initialValue}}">
     <template>
-        <div id="embed"></div>
+        <div id="embed" ></div>
     </template>
 
     <script>
-        (function () {
+        (function() {
             var app;
 
             Polymer({
@@ -16,23 +16,45 @@
                         type: Number,
                         value: 0,
                         notify: true,
-                        //reflectToAttribute: true
+                        reflectToAttribute: true
                     },
+
+                    initialValue: {
+                        type: Number,
+                        //reflectToAttribute: true
+                    }
                 },
                 reset() {
                     console.log("reset : called")
                     this.value = 0;
                     app.ports.set.send(this.value);
                 },
+                created() {
+                    console.log("created : called")
+                    console.log("created : initial-value = " + this.initialValue)
+                },
                 ready() {
                     console.log("ready : called")
                     console.log("ready : value = " + this.value)
-                    app = Elm.Component.embed(this.$.embed, { value : this.value });
-                    //app.ports.set.send(this.value);
-                     app.ports.change.subscribe(value => {
-                         this.value = value;
-                     });
+                    console.log("ready : initial-value = " + this.initialValue)
+
                 },
+                attached() {
+                    console.log("attached : called")
+                    console.log("attached : initial-value = " + this.initialValue)
+
+                    if (this.initialValue) {
+                      this.value = this.initialValue;
+                    }
+
+                    app = Elm.Component.embed(this.$.embed, {
+                        value: this.value
+                    });
+                    //app.ports.set.send(this.value);
+                    app.ports.change.subscribe(value => {
+                        this.value = value;
+                    });
+                }
             });
         })();
     </script>

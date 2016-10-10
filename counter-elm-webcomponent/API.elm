@@ -1,4 +1,4 @@
-module API exposing (counter, count, onCountChanged)
+module API exposing (counter, initialValue, onCountChanged)
 
 import Json.Decode as Decode
 import Html exposing (Attribute, Html)
@@ -14,9 +14,9 @@ counter attrs =
     Html.node "elm-counter" attrs []
 
 
-count : Int -> Attribute msg
-count val =
-    attribute "value" (toString val)
+initialValue : Int -> Attribute msg
+initialValue val =
+    attribute "initial-value" (toString val)
 
 
 onCountChanged : (Int -> msg) -> Attribute msg

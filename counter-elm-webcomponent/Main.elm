@@ -13,7 +13,7 @@ view : Model -> Html Msg
 view model =
     div []
         [ counter [ count 2, onCountChanged ValueChanged ]
-        , counter [ count 2, onCountChanged ValueChanged ]
+          --, counter [ count 2, onCountChanged ValueChanged ]
         ]
 
 

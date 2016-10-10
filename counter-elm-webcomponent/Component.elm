@@ -31,7 +31,7 @@ type Msg
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    case msg of
+    case (Debug.log "val" msg) of
         Increment ->
             let
                 new =

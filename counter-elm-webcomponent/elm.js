@@ -7933,7 +7933,7 @@ var _kevinlebrun$elm_polymer_sandbox$Component$change = _elm_lang$core$Native_Pl
 	});
 var _kevinlebrun$elm_polymer_sandbox$Component$update = F2(
 	function (msg, model) {
-		var _p0 = msg;
+		var _p0 = A2(_elm_lang$core$Debug$log, 'val', msg);
 		switch (_p0.ctor) {
 			case 'Increment':
 				var $new = model + 1;
@@ -8036,12 +8036,6 @@ var _kevinlebrun$elm_polymer_sandbox$Main$view = function (model) {
 			[]),
 		_elm_lang$core$Native_List.fromArray(
 			[
-				_kevinlebrun$elm_polymer_sandbox$API$counter(
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_kevinlebrun$elm_polymer_sandbox$API$count(2),
-						_kevinlebrun$elm_polymer_sandbox$API$onCountChanged(_kevinlebrun$elm_polymer_sandbox$Main$ValueChanged)
-					])),
 				_kevinlebrun$elm_polymer_sandbox$API$counter(
 				_elm_lang$core$Native_List.fromArray(
 					[

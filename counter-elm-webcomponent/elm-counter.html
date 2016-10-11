@@ -1,6 +1,6 @@
 <link rel="import" href="../bower_components/polymer/polymer.html" />
 
-<dom-module id="elm-counter" initial-count$="{{initialCount}}">
+<dom-module id="elm-counter">
     <template>
         <div id="embed" ></div>
     </template>
@@ -24,7 +24,6 @@
                     }
                 },
                 attached() {
-                    console.log("attached : called")
                     console.log("attached : initial-count = " + this.initialCount)
 
                     if (this.initialCount) {

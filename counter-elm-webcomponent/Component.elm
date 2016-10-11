@@ -57,8 +57,5 @@ main =
         { init = init
         , view = view
         , update = update
-        , subscriptions = \_ -> set Set
+        , subscriptions = \_ -> Sub.none
         }
-
-
-port set : (Model -> msg) -> Sub msg

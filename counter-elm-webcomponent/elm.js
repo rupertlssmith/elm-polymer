@@ -7958,7 +7958,6 @@ var _kevinlebrun$elm_polymer_sandbox$Component$update = F2(
 var _kevinlebrun$elm_polymer_sandbox$Component$init = function (flags) {
 	return {ctor: '_Tuple2', _0: flags.count, _1: _elm_lang$core$Platform_Cmd$none};
 };
-var _kevinlebrun$elm_polymer_sandbox$Component$set = _elm_lang$core$Native_Platform.incomingPort('set', _elm_lang$core$Json_Decode$int);
 var _kevinlebrun$elm_polymer_sandbox$Component$Set = function (a) {
 	return {ctor: 'Set', _0: a};
 };
@@ -8009,7 +8008,7 @@ var _kevinlebrun$elm_polymer_sandbox$Component$main = {
 			view: _kevinlebrun$elm_polymer_sandbox$Component$view,
 			update: _kevinlebrun$elm_polymer_sandbox$Component$update,
 			subscriptions: function (_p2) {
-				return _kevinlebrun$elm_polymer_sandbox$Component$set(_kevinlebrun$elm_polymer_sandbox$Component$Set);
+				return _elm_lang$core$Platform_Sub$none;
 			}
 		}),
 	flags: A2(
